@@ -337,9 +337,15 @@ class LiveServerTestCase(unittest.TestCase):
         # Get the app
         self.app = self.create_app()
 
-        self.port = 5000  # Default
         if 'LIVESERVER_PORT' in self.app.config:
             self.port = self.app.config['LIVESERVER_PORT']
+        else:
+            # find next free port
+            import socket
+            sock = socket.socket()
+            sock.bind(('localhost',0))
+            _, self.port = sock.getsockname()
+            sock.close()
 
         self.http_server = HTTPServer(WSGIContainer(self.app))
         self.http_server.listen(self.port)
