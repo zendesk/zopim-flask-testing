@@ -349,12 +349,13 @@ class LiveServerTestCase(unittest.TestCase):
 
         self.http_server = HTTPServer(WSGIContainer(self.app))
         self.http_server.listen(self.port)
-        thread = threading.Thread(
+        self._thread = threading.Thread(
             target=IOLoop().instance().start
         )
 
-        thread.start()
+        self._thread.start()
 
     def _post_teardown_live(self):
         self.http_server.stop()
         IOLoop().instance().stop()
+        self._thread.join()
