@@ -372,6 +372,8 @@ class LiveServerTestCase(unittest.TestCase):
         self._thread.start()
 
     def _post_teardown_live(self):
-        self.http_server.stop()
+        if hasattr(self, 'http_server'):
+            self.http_server.stop()
         IOLoop().instance().stop()
-        self._thread.join()
+        if hasattr(self, '_thread'):
+            self._thread.join()
